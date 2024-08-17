@@ -4,13 +4,7 @@ import {
   DotLottiePlayer,
 } from "@dotlottie/react-player";
 import productImage from "@/assets/product-image.png";
-import {
-  ComponentPropsWithoutRef,
-  ComponentPropsWithRef,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { ComponentPropsWithoutRef, useEffect, useRef, useState } from "react";
 import {
   animate,
   motion,
@@ -18,7 +12,6 @@ import {
   useMotionValue,
   ValueAnimationTransition,
 } from "framer-motion";
-import { get } from "http";
 
 const tabs = [
   {
@@ -83,13 +76,14 @@ const FeatureTab = (
     };
     animate(xPercentage, [0, 100, 100, 0, 0], options);
     animate(yPercentage, [0, 0, 100, 100, 0], options);
-  }, [props.selected]);
+  }, [props.selected, xPercentage, yPercentage]);
 
   const handleTabHover = () => {
     if (dotLottieRef.current === null) return;
     dotLottieRef.current.seek(0);
     dotLottieRef.current.play();
   };
+
   return (
     <div
       ref={tabRef}
@@ -102,10 +96,10 @@ const FeatureTab = (
           style={{
             maskImage,
           }}
-          className="absolute inset-0 -m-px border border-[#A369FF] rounded-xl "
+          className="absolute inset-0 -m-px border border-[#A369FF] rounded-xl"
         ></motion.div>
       )}
-      <div className="h-12 w-12 border border-white/15 rounded-lg inline-flex items-center justify-center ">
+      <div className="h-12 w-12 border border-white/15 rounded-lg inline-flex items-center justify-center">
         <DotLottiePlayer
           ref={dotLottieRef}
           src={props.icon}
@@ -131,7 +125,7 @@ export const Features = () => {
   const backgroundSizeX = useMotionValue(tabs[0].backgroundSizeX);
 
   const backgroundPosition = useMotionTemplate`${backgroundPositionX}% ${backgroundPositionY}%`;
-  const backgroundSize = useMotionTemplate`${backgroundPositionX}% auto`;
+  const backgroundSize = useMotionTemplate`${backgroundSizeX}% auto`;
 
   const handleSelectTab = (index: number) => {
     setSelectedTab(index);
@@ -144,7 +138,6 @@ export const Features = () => {
     animate(
       backgroundSizeX,
       [backgroundSizeX.get(), 100, tabs[index].backgroundSizeX],
-
       animateOptions
     );
 
@@ -153,6 +146,7 @@ export const Features = () => {
       [backgroundPositionX.get(), tabs[index].backgroundPositionX],
       animateOptions
     );
+
     animate(
       backgroundPositionY,
       [backgroundPositionY.get(), tabs[index].backgroundPositionY],
@@ -168,14 +162,14 @@ export const Features = () => {
         </h2>
         <p className="text-white/70 text-lg md:text-xl max-w-2xl mx-auto tracking-tight text-center mt-5">
           From small startups to large enterprises, our AI-driven tool has
-          revolutionized the way buisness approch SEO.
+          revolutionized the way business approach SEO.
         </p>
         <div className="mt-10 flex flex-col lg:flex-row gap-3">
           {tabs.map((tab, tabIndex) => (
             <FeatureTab
               {...tab}
               selected={selectedTab === tabIndex}
-              onClick={handleSelectTab}
+              onClick={() => handleSelectTab(tabIndex)}
               key={tab.title}
             />
           ))}
