@@ -9,18 +9,21 @@ import {
   useScroll,
   useTransform,
 } from "framer-motion";
-import { RefObject, useEffect, useRef } from "react";
+import { RefObject, useEffect, useRef, useCallback } from "react";
 
-const useRelativeMousePositon = (to: RefObject<HTMLElement>) => {
+const useRelativeMousePosition = (to: RefObject<HTMLElement>) => {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
-  const updateMousePosition = (event: MouseEvent) => {
-    if (!to.current) return;
-    const { top, left } = to.current.getBoundingClientRect();
-    mouseX.set(event.x - left);
-    mouseY.set(event.y - top);
-  };
+  const updateMousePosition = useCallback(
+    (event: MouseEvent) => {
+      if (!to.current) return;
+      const { top, left } = to.current.getBoundingClientRect();
+      mouseX.set(event.x - left);
+      mouseY.set(event.y - top);
+    },
+    [to, mouseX, mouseY]
+  );
 
   useEffect(() => {
     window.addEventListener("mousemove", updateMousePosition);
@@ -28,7 +31,7 @@ const useRelativeMousePositon = (to: RefObject<HTMLElement>) => {
     return () => {
       window.removeEventListener("mousemove", updateMousePosition);
     };
-  }, []);
+  }, [updateMousePosition]);
 
   return [mouseX, mouseY];
 };
@@ -47,7 +50,7 @@ export const CallToAction = () => {
     [-300, 300]
   );
 
-  const [mouseX, mouseY] = useRelativeMousePositon(borderDivRef);
+  const [mouseX, mouseY] = useRelativeMousePosition(borderDivRef);
 
   const maskImage = useMotionTemplate`radial-gradient(50% 50% at ${mouseX}px ${mouseY}px, black, transparent)`;
   return (
@@ -76,7 +79,7 @@ export const CallToAction = () => {
             }}
           ></div>
           <motion.div
-            className="absolute inset-0 bg-[rgb(74,32,139)] bg-blend-overlay  opacaity-0 group-hover:opacity-100 transition duration-700"
+            className="absolute inset-0 bg-[rgb(74,32,139)] bg-blend-overlay opacity-0 group-hover:opacity-100 transition duration-700"
             style={{
               maskImage,
               backgroundImage: `url(${gridLines.src})`,
@@ -87,7 +90,7 @@ export const CallToAction = () => {
               AI-driven SEO for everyone
             </h2>
             <p className="text-center text-lg md:text-xl max-w-xs mx-auto text-white/70 px-4 mt-5 tracking-tight">
-              Achieve clear, impactfull results with the complexity.
+              Achieve clear, impactful results with the complexity.
             </p>
             <div className="flex justify-center mt-8">
               <Button>Join waitlist</Button>
