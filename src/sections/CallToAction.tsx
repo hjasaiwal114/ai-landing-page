@@ -3,10 +3,16 @@ import { Button } from "@/components/Button";
 import starsBg from "@/assets/stars.png";
 import gridLines from "@/assets/grid-lines.png";
 import { motion, useScroll } from "framer-motion";
+import { useRef } from "react";
 
 export const CallToAction = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
   return (
-    <section className="py-20 md:py-24">
+    <section className="py-20 md:py-24" ref={sectionRef}>
       <div className="container">
         <div
           className="border border-white/15 py-24 rounded-xl overflow-hidden relative "
