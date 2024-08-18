@@ -1,6 +1,8 @@
+"use client";
 import { Button } from "@/components/Button";
 import starsBg from "@/assets/stars.png";
 import gridLines from "@/assets/grid-lines.png";
+import { motion, useScroll } from "framer-motion";
 
 export const CallToAction = () => {
   return (
